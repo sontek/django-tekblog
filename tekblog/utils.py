@@ -14,7 +14,7 @@ from pygments.formatters import HtmlFormatter
 from pygments.lexers import get_lexer_by_name, guess_lexer
 from BeautifulSoup import BeautifulSoup
 from django.conf import settings
-from re import compile
+import re
 
 class Formatter:
     # The types of markup that are available
