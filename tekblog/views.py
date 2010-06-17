@@ -3,6 +3,7 @@ import re
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from tekblog.models import Entry
+from django.db.models import Q
 from django.core.paginator import Paginator
 from haystack.views import SearchView
 from haystack.query import EmptySearchQuerySet, SearchQuerySet
@@ -33,7 +34,7 @@ def search(request, template='tekblog/search.html'):
         query = '%s' % request.GET['q']
         clean_search = stop_word_list.sub('', query)
         clean_search = clean_search.strip()
-        if len(clean_data) != 0:
+        if len(clean_search) != 0:
             results = sqs.filter(
                         Q(title__icontains=clean_search) | 
                         Q(content__icontains=clean_search) | 
@@ -51,7 +52,7 @@ def search(request, template='tekblog/search.html'):
 
     context = {
         'page': page,
-        'paginator': paginator,
+        'pager': paginator,
         'query': query,
         'message': message,
     }
