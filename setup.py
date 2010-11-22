@@ -10,7 +10,7 @@ f.close()
 
 setup(
     name='django-tekblog',
-    version=".".join(map(str, VERSION)),
+    version='0.1.2',
     description='django-tekblog is a reusable Django application for simple blogging.',
     long_description=readme,
     author='sontek',
