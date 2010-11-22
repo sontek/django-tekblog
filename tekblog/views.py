@@ -4,11 +4,11 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from tekblog.models import Entry
 from django.core.paginator import Paginator, InvalidPage
-from haystack.views import SearchView
-from haystack.query import EmptySearchQuerySet, SearchQuerySet
 from tekblog.forms import EntrySearchForm
 from django.http import Http404
 from tagging.models import TaggedItem
+from haystack.views import SearchView
+from haystack.query import EmptySearchQuerySet, SearchQuerySet
 
 def index(request, page=1, topic=None, template='tekblog/index.html'):
     active_entries = Entry.objects.active(is_staff=request.user.is_staff)

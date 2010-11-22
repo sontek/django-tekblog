@@ -39,7 +39,7 @@ class Entry(models.Model):
     series          = models.ForeignKey(Series, blank=True, null=True)
     featured        = models.BooleanField(default=False)
     title           = models.CharField(max_length=255)
-    creator_ip      = models.IPAddressField(blank=True, null=True)
+    creator_ip      = models.IPAddressField(blank=True, null=True, editable=False)
     draft           = models.BooleanField(default=True)
     allow_comments  = models.BooleanField(default=True)
     slug            = AutoSlugField(populate_from='title')
@@ -51,9 +51,9 @@ class Entry(models.Model):
     sites           = models.ManyToManyField(Site)
 
     # Dates
-    created_on      = models.DateTimeField(default=datetime.now)
-    published_on    = models.DateTimeField(default=datetime.now)
-    modified_on     = models.DateTimeField(blank=True, null=True)
+    created_on      = models.DateTimeField(auto_now_add=True, default=datetime.now, editable=False)
+    published_on    = models.DateTimeField(blank=True, null=True, default=datetime.now)
+    modified_on     = models.DateTimeField(auto_now=True, blank=True, null=True, editable=False)
 
     # SEO
     keywords        = models.CharField(max_length=200, null=True, blank=True)
