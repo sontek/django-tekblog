@@ -11,13 +11,14 @@ from django_extensions.db.fields import AutoSlugField
 
 formatter = Formatter()
 
+
 class Series(models.Model):
     """ Series Model
         Link a collection of blogs together so the user
         can easily follow along
     """
-    title           = models.CharField(max_length=100)
-    description     = models.TextField()
+    title = models.CharField(max_length=100)
+    description = models.TextField()
 
     def __unicode__(self):
         return unicode(self.title)
@@ -25,30 +26,34 @@ class Series(models.Model):
     class Meta:
         verbose_name_plural = 'Series'
 
+
 class ActiveEntryManager(models.Manager):
+
     def active(self, is_staff=False):
         if is_staff:
             return self.filter(sites__id__exact=settings.SITE_ID)
         else:
-            return self.filter(draft=False, published_on__lte=datetime.now, 
+            return self.filter(draft=False, published_on__lte=datetime.now,
                     sites__id__exact=settings.SITE_ID)
+
 
 class Entry(models.Model):
     """ Base class for blog entries """
-    owner           = models.ForeignKey(User)
-    series          = models.ForeignKey(Series, blank=True, null=True)
-    featured        = models.BooleanField(default=False)
-    title           = models.CharField(max_length=255)
+    owner = models.ForeignKey(User)
+    series = models.ForeignKey(Series, blank=True, null=True)
+    featured = models.BooleanField(default=False)
+    title = models.CharField(max_length=255)
     creator_ip      = models.IPAddressField(blank=True, null=True, editable=False)
-    draft           = models.BooleanField(default=True)
-    allow_comments  = models.BooleanField(default=True)
-    slug            = AutoSlugField(populate_from='title')
-    content         = models.TextField()
-    html_content    = models.TextField(editable=False, blank=True)
-    markup          = models.CharField(max_length=4, choices=formatter.MARKUP_CHOICES)
-    objects         = ActiveEntryManager()
-    tags            = TagField()
-    sites           = models.ManyToManyField(Site)
+    draft = models.BooleanField(default=True)
+    allow_comments = models.BooleanField(default=True)
+    slug = AutoSlugField(populate_from='title')
+    content = models.TextField()
+    html_content = models.TextField(editable=False, blank=True)
+    markup = models.CharField(max_length=4,
+            choices=formatter.MARKUP_CHOICES)
+    objects = ActiveEntryManager()
+    tags = TagField()
+    sites = models.ManyToManyField(Site)
 
     # Dates
     created_on      = models.DateTimeField(auto_now_add=True, default=datetime.now, editable=False)
@@ -56,20 +61,30 @@ class Entry(models.Model):
     modified_on     = models.DateTimeField(auto_now=True, blank=True, null=True, editable=False)
 
     # SEO
-    keywords        = models.CharField(max_length=200, null=True, blank=True)
-    description     = models.TextField(null=True, blank=True)
+    keywords = models.CharField(max_length=200, null=True, blank=True)
+    description = models.TextField(null=True, blank=True)
 
     # Used to display "You might be interested in..."
     related_content = models.ManyToManyField('self', null=True, blank=True)
 
+    def get_html_content(self):
+        """We can only assign allow_tags to methods"""
+        return '<a href="%s" target="_blank">%s</a><br />%s' % (
+                self.get_absolute_url(),
+                self.title, self.html_content)
+
+    get_html_content.allow_tags = True
+
     def save(self):
-        self.html_content = formatter.format(self.markup, self.content) 
+        self.html_content = formatter.format(self.markup, self.content)
         super(Entry, self).save()
 
     @permalink
     def get_absolute_url(self):
-        return ('tekblog_detail', (), 
-                { 'slug': self.slug }
+        return ('tekblog_detail', (),
+                {
+                    'slug': self.slug
+                }
         )
 
     def __unicode__(self):
@@ -78,6 +93,7 @@ class Entry(models.Model):
     class Meta:
         verbose_name_plural = 'Entries'
         ordering = ('-published_on',)
+
 
 class EntryModerator(CommentModerator):
     email_notification = True

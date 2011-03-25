@@ -1,29 +1,23 @@
-import os
-from setuptools import setup, find_packages
-
-from tekblog import VERSION
-
-
-f = open(os.path.join(os.path.dirname(__file__), 'README'))
-readme = f.read()
-f.close()
+try:
+    from setuptools import setup
+except ImportError:
+    from distutils.core import setup
 
 setup(
     name='django-tekblog',
-    version='0.1.3',
-    description='django-tekblog is a reusable Django application for simple blogging.',
-    long_description=readme,
-    author='sontek',
+    version=__import__('tekblog').__version__,
+    description='A django blog engine',
+    long_description='',
+    author='John Anderson',
     author_email='sontek@gmail.com',
-    url='http://github.com/sontek/django-tekblog/tree/master',
-    packages=find_packages(),
+    url='http://github.com/sontek/django-tekblog',
+    download_url='http://github.com/sontek/django-tekblog',
+    license='BSD',
+    packages=['tekblog'],
     classifiers=[
-        'Development Status :: 3 - Alpha',
-        'Environment :: Web Environment',
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: BSD License',
-        'Operating System :: OS Independent',
-        'Programming Language :: Python',
-        'Framework :: Django',
+            'Framework :: Django',
+            'License :: OSI Approved :: BSD License',
+            'Operating System :: OS Independent',
+            'Programming Language :: Python',
     ],
 )
